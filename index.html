@@ -16,9 +16,9 @@
         }
         .login-container, .menu-container, .service-container {
             background-color: #ffffff;
-            padding: 20px;
+            padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             max-width: 500px;
             width: 100%;
             text-align: center;
@@ -30,7 +30,7 @@
             border-radius: 5px;
             margin-bottom: 10px;
             width: 100%;
-            box-sizing: border-box;
+            transition: transform 0.2s;
         }
         button {
             background-color: #ba68c8;
@@ -39,51 +39,24 @@
         }
         button:hover {
             background-color: #ab47bc;
+            transform: scale(1.05);
         }
         h1, h2 {
             color: #5e35b1;
         }
-        .service-container button {
-            margin-top: 10px;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-        }
         .hidden {
             display: none;
         }
-        @media (max-width: 600px) {
-            .login-container, .menu-container, .service-container {
-                padding: 15px;
-                box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-            }
-            input, button {
-                padding: 8px;
-            }
+        #conversiones input {
+            width: 80%;
+            margin: 10px auto;
         }
     </style>
 </head>
 <body>
 
     <div class="login-container" id="loginContainer">
-        <h1>Bienvenido a la Plataforma<br><small>¡Tu acceso a herramientas y servicios!</small></h1>
+        <h1>Iniciar Sesión</h1>
         <input type="text" id="username" placeholder="Usuario">
         <input type="password" id="password" placeholder="Contraseña">
         <input type="checkbox" id="showPassword" onclick="togglePassword()"> Mostrar Contraseña
@@ -114,28 +87,20 @@
             const password = document.getElementById('password').value;
 
             if (username !== '' && password !== '') {
-                document.getElementById('loginContainer').style.animation = 'fadeOut 0.5s ease-in-out';
-                setTimeout(() => {
-                    document.getElementById('loginContainer').style.display = 'none';
-                    document.getElementById('menuContainer').style.display = 'block';
-                }, 500);
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('menuContainer').style.display = 'block';
             }
         }
 
         function showService(serviceNumber) {
-            document.getElementById('menuContainer').style.animation = 'fadeOut 0.5s ease-in-out';
-            setTimeout(() => {
-                document.getElementById('menuContainer').style.display = 'none';
-                document.getElementById('serviceContainer').style.display = 'block';
-                document.getElementById('serviceContainer').style.animation = 'fadeIn 0.5s ease-in-out';
-            }, 500);
+            document.getElementById('serviceContent').innerHTML = ''; // Reset content
 
             let content = '';
             if (serviceNumber === 1) {
                 content = `
                 <h2>Operaciones y Conversiones</h2>
                 <div class="section">
-                    <h2>Operaciones Matemáticas</h2>
+                    <h3>Operaciones Matemáticas</h3>
                     <label for="operacion">Seleccione una operación:</label>
                     <select id="operacion">
                         <option value="1">Suma</option>
@@ -145,15 +110,13 @@
                         <option value="5">Potenciación (x^y)</option>
                         <option value="6">Raíz cuadrada</option>
                     </select>
-                    <div id="inputsMatematicas">
-                        <input type="number" id="num1" placeholder="Ingrese el primer número"><br>
-                        <input type="number" id="num2" placeholder="Ingrese el segundo número">
-                    </div>
+                    <input type="number" id="num1" placeholder="Ingrese el primer número">
+                    <input type="number" id="num2" placeholder="Ingrese el segundo número">
                     <button onclick="operacionesMatematicas()">Calcular</button>
                     <p id="resultadoMatematicas"></p>
                 </div>
                 <div class="section">
-                    <h2>Conversión de Unidades</h2>
+                    <h3>Conversión de Unidades</h3>
                     <label for="tipoConversion">Seleccione un tipo de conversión:</label>
                     <select id="tipoConversion" onchange="mostrarConversion()">
                         <option value="longitud">Longitud</option>
@@ -168,40 +131,40 @@
                 <h2>Cajero Automático</h2>
                 <div id="login">
                     <label for="cuenta">Número de cuenta (18 dígitos):</label>
-                    <input type="text" id="cuenta" maxlength="18"><br><br>
+                    <input type="text" id="cuenta" maxlength="18">
                     <label for="nip">NIP (4 dígitos):</label>
-                    <input type="password" id="nip" maxlength="4"><br><br>
+                    <input type="password" id="nip" maxlength="4">
                     <button onclick="validarUsuario()">Ingresar</button>
                     <p id="loginError" class="hidden">Número de cuenta o NIP incorrectos.</p>
                 </div>
                 <div id="menu" class="hidden">
                     <h2>Menú de Operaciones</h2>
-                    <button onclick="mostrarSaldo()">Mostrar Saldo</button><br><br>
-                    <button onclick="mostrarDeposito()">Depositar</button><br><br>
-                    <button onclick="mostrarRetiro()">Retirar</button><br><br>
-                    <button onclick="mostrarPago()">Pagar Servicio</button><br><br>
-                    <button onclick="salir()">Salir</button><br><br>
+                    <button onclick="mostrarSaldo()">Mostrar Saldo</button>
+                    <button onclick="mostrarDeposito()">Depositar</button>
+                    <button onclick="mostrarRetiro()">Retirar</button>
+                    <button onclick="mostrarPago()">Pagar Servicio</button>
+                    <button onclick="salir()">Salir</button>
                     <p id="saldoInfo" class="hidden">Su saldo es: $<span id="saldo"></span></p>
                     <div id="deposito" class="hidden">
                         <h3>Depósito</h3>
                         <label for="montoDeposito">Monto a depositar (max $5000):</label>
-                        <input type="number" id="montoDeposito"><br><br>
+                        <input type="number" id="montoDeposito">
                         <button onclick="realizarDeposito()">Depositar</button>
                         <p id="depositoError" class="hidden"></p>
                     </div>
                     <div id="retiro" class="hidden">
                         <h3>Retiro</h3>
                         <label for="montoRetiro">Monto a retirar (min $100):</label>
-                        <input type="number" id="montoRetiro"><br><br>
+                        <input type="number" id="montoRetiro">
                         <button onclick="realizarRetiro()">Retirar</button>
                         <p id="retiroError" class="hidden"></p>
                     </div>
                     <div id="pago" class="hidden">
                         <h3>Pagar Servicio</h3>
                         <label for="numeroSerie">Número de serie del servicio (6 dígitos):</label>
-                        <input type="number" id="numeroSerie"><br><br>
+                        <input type="number" id="numeroSerie">
                         <label for="montoPago">Monto a pagar:</label>
-                        <input type="number" id="montoPago"><br><br>
+                        <input type="number" id="montoPago">
                         <button onclick="pagarServicio()">Pagar</button>
                         <p id="pagoError" class="hidden"></p>
                     </div>
@@ -211,58 +174,129 @@
                 content = `
                 <h2>Calcular Capital</h2>
                 <label for="tasa">Ingrese la tasa de interés anual (%):</label>
-                <input type="number" id="tasa" step="0.01"><br>
-                
+                <input type="number" id="tasa" step="0.01">
                 <label for="pagos">Ingrese el número de pagos de interés por año:</label>
-                <input type="number" id="pagos" step="1"><br>
-                
+                <input type="number" id="pagos" step="1">
                 <label for="anos">Ingrese el número de años:</label>
-                <input type="number" id="anos" step="1"><br>
-                
+                <input type="number" id="anos" step="1">
                 <button onclick="calcularCapitalFinal()">Calcular</button>
-                
                 <p id="resultado"></p>
                 `;
             }
             document.getElementById('serviceContent').innerHTML = content;
+            document.getElementById('serviceContainer').style.display = 'block';
+
+            if (serviceNumber === 2) {
+                document.getElementById('login').style.display = 'block';
+                document.getElementById('menu').style.display = 'none';
+            }
+        }
+
+        function operacionesMatematicas() {
+            const operacion = document.getElementById('operacion').value;
+            const num1 = parseFloat(document.getElementById('num1').value);
+            const num2 = parseFloat(document.getElementById('num2').value);
+            let resultado;
+
+            if (isNaN(num1) || isNaN(num2)) {
+                document.getElementById('resultadoMatematicas').textContent = "Por favor, ingrese valores válidos.";
+                return;
+            }
+
+            switch (operacion) {
+                case "1":
+                    resultado = num1 + num2;
+                    break;
+                case "2":
+                    resultado = num1 - num2;
+                    break;
+                case "3":
+                    resultado = num1 * num2;
+                    break;
+                case "4":
+                    resultado = num1 / num2;
+                    break;
+                case "5":
+                    resultado = Math.pow(num1, num2);
+                    break;
+                case "6":
+                    resultado = Math.sqrt(num1);
+                    break;
+                default:
+                    resultado = "Operación no válida.";
+            }
+            document.getElementById('resultadoMatematicas').textContent = `Resultado: ${resultado}`;
+        }
+
+        function mostrarConversion() {
+            const tipoConversion = document.getElementById('tipoConversion').value;
+            let conversionHtml = '';
+            if (tipoConversion === 'longitud') {
+                conversionHtml = `
+                <input type="number" id="longitudInput" placeholder="Ingrese longitud en metros">
+                <button onclick="calcularConversion('longitud')">Calcular</button>
+                <p id="resultadoConversion"></p>
+                `;
+            } else if (tipoConversion === 'temperatura') {
+                conversionHtml = `
+                <input type="number" id="temperaturaInput" placeholder="Ingrese temperatura en Celsius">
+                <button onclick="calcularConversion('temperatura')">Calcular</button>
+                <p id="resultadoConversion"></p>
+                `;
+            } else if (tipoConversion === 'peso') {
+                conversionHtml = `
+                <input type="number" id="pesoInput" placeholder="Ingrese peso en kilogramos">
+                <button onclick="calcularConversion('peso')">Calcular</button>
+                <p id="resultadoConversion"></p>
+                `;
+            }
+            document.getElementById('conversiones').innerHTML = conversionHtml;
+        }
+
+        function calcularConversion(tipo) {
+            let resultado;
+            if (tipo === 'longitud') {
+                const metros = parseFloat(document.getElementById('longitudInput').value);
+                if (isNaN(metros)) {
+                    resultado = "Por favor, ingrese un valor válido.";
+                } else {
+                    resultado = `${metros} metros son ${metros * 100} centímetros.`;
+                }
+            } else if (tipo === 'temperatura') {
+                const celsius = parseFloat(document.getElementById('temperaturaInput').value);
+                if (isNaN(celsius)) {
+                    resultado = "Por favor, ingrese un valor válido.";
+                } else {
+                    resultado = `${celsius} °C son ${(celsius * 9/5) + 32} °F.`;
+                }
+            } else if (tipo === 'peso') {
+                const kilos = parseFloat(document.getElementById('pesoInput').value);
+                if (isNaN(kilos)) {
+                    resultado = "Por favor, ingrese un valor válido.";
+                } else {
+                    resultado = `${kilos} kg son ${kilos * 2.20462} libras.`;
+                }
+            }
+            document.getElementById('resultadoConversion').textContent = resultado;
         }
 
         function goBackToMenu() {
-            document.getElementById('serviceContainer').style.animation = 'fadeOut 0.5s ease-in-out';
-            setTimeout(() => {
-                document.getElementById('serviceContainer').style.display = 'none';
-                document.getElementById('menuContainer').style.display = 'block';
-            }, 500);
+            document.getElementById('serviceContainer').style.display = 'none';
+            document.getElementById('menuContainer').style.display = 'block';
         }
 
         function goBackToStart() {
-            document.getElementById('serviceContainer').style.animation = 'fadeOut 0.5s ease-in-out';
-            setTimeout(() => {
-                document.getElementById('serviceContainer').style.display = 'none';
-                document.getElementById('menuContainer').style.display = 'none';
-                document.getElementById('loginContainer').style.display = 'block';
-            }, 500);
+            document.getElementById('serviceContainer').style.display = 'none';
+            document.getElementById('menuContainer').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
         }
 
         let saldo = 1000; // Saldo inicial
-
-        function resetCajero() {
-            document.getElementById('login').style.display = 'block';
-            document.getElementById('menu').style.display = 'none';
-            document.getElementById('cuenta').value = '';
-            document.getElementById('nip').value = '';
-            document.getElementById('loginError').classList.add('hidden');
-            document.getElementById('saldoInfo').classList.add('hidden');
-            document.getElementById('deposito').classList.add('hidden');
-            document.getElementById('retiro').classList.add('hidden');
-            document.getElementById('pago').classList.add('hidden');
-        }
 
         function validarUsuario() {
             const cuenta = document.getElementById('cuenta').value;
             const nip = document.getElementById('nip').value;
 
-            // Validación simplificada
             if (cuenta.length === 18 && nip.length === 4) {
                 document.getElementById('login').style.display = 'none';
                 document.getElementById('menu').style.display = 'block';
@@ -274,6 +308,7 @@
 
         function mostrarSaldo() {
             document.getElementById('saldoInfo').classList.remove('hidden');
+            document.getElementById('saldo').textContent = saldo;
         }
 
         function mostrarDeposito() {
@@ -284,16 +319,15 @@
 
         function realizarDeposito() {
             const monto = parseFloat(document.getElementById('montoDeposito').value);
-            document.getElementById('depositoError').classList.add('hidden');
-
-            if (monto > 0 && monto <= 5000) {
-                saldo += monto;
-                document.getElementById('saldo').textContent = saldo;
-                alert('Depósito realizado con éxito.');
-            } else {
-                document.getElementById('depositoError').textContent = 'Monto inválido. Debe ser entre 1 y 5000.';
+            if (isNaN(monto) || monto <= 0 || monto > 5000) {
+                document.getElementById('depositoError').textContent = "Monto inválido. Debe ser mayor a 0 y máximo 5000.";
                 document.getElementById('depositoError').classList.remove('hidden');
+                return;
             }
+            saldo += monto;
+            document.getElementById('depositoError').classList.add('hidden');
+            alert(`Depósito realizado. Su nuevo saldo es: $${saldo}`);
+            document.getElementById('montoDeposito').value = '';
         }
 
         function mostrarRetiro() {
@@ -304,16 +338,15 @@
 
         function realizarRetiro() {
             const monto = parseFloat(document.getElementById('montoRetiro').value);
-            document.getElementById('retiroError').classList.add('hidden');
-
-            if (monto >= 100 && monto <= saldo) {
-                saldo -= monto;
-                document.getElementById('saldo').textContent = saldo;
-                alert('Retiro realizado con éxito.');
-            } else {
-                document.getElementById('retiroError').textContent = 'Monto inválido. Debe ser mayor o igual a 100 y menor o igual a su saldo.';
+            if (isNaN(monto) || monto < 100 || monto > saldo) {
+                document.getElementById('retiroError').textContent = "Monto inválido. Debe ser mayor o igual a 100 y no debe exceder su saldo.";
                 document.getElementById('retiroError').classList.remove('hidden');
+                return;
             }
+            saldo -= monto;
+            document.getElementById('retiroError').classList.add('hidden');
+            alert(`Retiro realizado. Su nuevo saldo es: $${saldo}`);
+            document.getElementById('montoRetiro').value = '';
         }
 
         function mostrarPago() {
@@ -325,20 +358,21 @@
         function pagarServicio() {
             const numeroSerie = document.getElementById('numeroSerie').value;
             const monto = parseFloat(document.getElementById('montoPago').value);
-            document.getElementById('pagoError').classList.add('hidden');
-
-            if (numeroSerie.length === 6 && monto > 0 && monto <= saldo) {
-                saldo -= monto;
-                document.getElementById('saldo').textContent = saldo;
-                alert('Pago realizado con éxito.');
-            } else {
-                document.getElementById('pagoError').textContent = 'Monto inválido o número de serie incorrecto.';
+            if (numeroSerie.length !== 6 || isNaN(monto) || monto <= 0 || monto > saldo) {
+                document.getElementById('pagoError').textContent = "Datos inválidos para el pago.";
                 document.getElementById('pagoError').classList.remove('hidden');
+                return;
             }
+            saldo -= monto;
+            document.getElementById('pagoError').classList.add('hidden');
+            alert(`Pago realizado. Su nuevo saldo es: $${saldo}`);
+            document.getElementById('numeroSerie').value = '';
+            document.getElementById('montoPago').value = '';
         }
 
         function salir() {
-            resetCajero();
+            alert('Saliendo...');
+            goBackToStart();
         }
 
         function calcularCapitalFinal() {
@@ -346,16 +380,14 @@
             const n = parseFloat(document.getElementById('tasa').value) / 100; // Tasa de interés anual en decimal
             const p = parseFloat(document.getElementById('pagos').value); // Número de pagos por año
             const a = parseFloat(document.getElementById('anos').value); // Número de años
-            
+
             if (isNaN(n) || isNaN(p) || isNaN(a) || p <= 0 || a <= 0) {
                 document.getElementById('resultado').textContent = "Por favor, ingrese valores válidos.";
                 return;
             }
-            
+
             // Fórmula de cálculo del capital final
             const Cf = Ci * Math.pow((1 + (n / p)), (p * a));
-            
-            // Mostrar el resultado
             document.getElementById('resultado').textContent = `El capital final es: ${Cf.toFixed(2)} pesos`;
         }
     </script>
