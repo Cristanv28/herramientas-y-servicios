@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Inicio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3e5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container, .menu-container, .service-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        input, button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #ba68c8;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ab47bc;
+        }
+        h1, h2 {
+            color: #5e35b1;
+        }
+        .service-container button {
+            margin-top: 10px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+        .hidden {
+            display: none;
+        }
+        @media (max-width: 600px) {
+            .login-container, .menu-container, .service-container {
+                padding: 15px;
+                box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            }
+            input, button {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container" id="loginContainer">
+        <h1>Bienvenido a la Plataforma<br><small>¡Tu acceso a herramientas y servicios!</small></h1>
+        <input type="text" id="username" placeholder="Usuario">
+        <input type="password" id="password" placeholder="Contraseña">
+        <input type="checkbox" id="showPassword" onclick="togglePassword()"> Mostrar Contraseña
+        <button onclick="validateLogin()">Ingresar</button>
+    </div>
+
+    <div class="menu-container" id="menuContainer" style="display:none;">
+        <h1>Menú de Servicios</h1>
+        <button onclick="showService(1)">Operaciones y Conversiones</button>
+        <button onclick="showService(2)">Cajero Automático</button>
+        <button onclick="showService(3)">Calcular Capital</button>
+    </div>
+
+    <div class="service-container" id="serviceContainer" style="display:none;">
+        <div id="serviceContent"></div>
+        <button onclick="goBackToMenu()">Volver al Menú</button>
+        <button onclick="goBackToStart()">Regresar al Inicio</button>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById("password");
+            passwordField.type = passwordField.type === "password" ? "text" : "password";
+        }
+
+        function validateLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username !== '' && password !== '') {
+                document.getElementById('loginContainer').style.animation = 'fadeOut 0.5s ease-in-out';
+                setTimeout(() => {
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('menuContainer').style.display = 'block';
+                }, 500);
+            }
+        }
+
+        function showService(serviceNumber) {
+            document.getElementById('menuContainer').style.animation = 'fadeOut 0.5s ease-in-out';
+            setTimeout(() => {
+                document.getElementById('menuContainer').style.display = 'none';
+                document.getElementById('serviceContainer').style.display = 'block';
+                document.getElementById('serviceContainer').style.animation = 'fadeIn 0.5s ease-in-out';
+            }, 500);
+
+            let content = '';
+            if (serviceNumber === 1) {
+                content = `
+                <h2>Operaciones y Conversiones</h2>
+                <div class="section">
+                    <h2>Operaciones Matemáticas</h2>
+                    <label for="operacion">Seleccione una operación:</label>
+                    <select id="operacion">
+                        <option value="1">Suma</option>
+                        <option value="2">Resta</option>
+                        <option value="3">Multiplicación</option>
+                        <option value="4">División</option>
+                        <option value="5">Potenciación (x^y)</option>
+                        <option value="6">Raíz cuadrada</option>
+                    </select>
+                    <div id="inputsMatematicas">
+                        <input type="number" id="num1" placeholder="Ingrese el primer número"><br>
+                        <input type="number" id="num2" placeholder="Ingrese el segundo número">
+                    </div>
+                    <button onclick="operacionesMatematicas()">Calcular</button>
+                    <p id="resultadoMatematicas"></p>
+                </div>
+                <div class="section">
+                    <h2>Conversión de Unidades</h2>
+                    <label for="tipoConversion">Seleccione un tipo de conversión:</label>
+                    <select id="tipoConversion" onchange="mostrarConversion()">
+                        <option value="longitud">Longitud</option>
+                        <option value="temperatura">Temperatura</option>
+                        <option value="peso">Peso</option>
+                    </select>
+                    <div id="conversiones"></div>
+                </div>
+                `;
+            } else if (serviceNumber === 2) {
+                content = `
+                <h2>Cajero Automático</h2>
+                <div id="login">
+                    <label for="cuenta">Número de cuenta (18 dígitos):</label>
+                    <input type="text" id="cuenta" maxlength="18"><br><br>
+                    <label for="nip">NIP (4 dígitos):</label>
+                    <input type="password" id="nip" maxlength="4"><br><br>
+                    <button onclick="validarUsuario()">Ingresar</button>
+                    <p id="loginError" class="hidden">Número de cuenta o NIP incorrectos.</p>
+                </div>
+                <div id="menu" class="hidden">
+                    <h2>Menú de Operaciones</h2>
+                    <button onclick="mostrarSaldo()">Mostrar Saldo</button><br><br>
+                    <button onclick="mostrarDeposito()">Depositar</button><br><br>
+                    <button onclick="mostrarRetiro()">Retirar</button><br><br>
+                    <button onclick="mostrarPago()">Pagar Servicio</button><br><br>
+                    <button onclick="salir()">Salir</button><br><br>
+                    <p id="saldoInfo" class="hidden">Su saldo es: $<span id="saldo"></span></p>
+                    <div id="deposito" class="hidden">
+                        <h3>Depósito</h3>
+                        <label for="montoDeposito">Monto a depositar (max $5000):</label>
+                        <input type="number" id="montoDeposito"><br><br>
+                        <button onclick="realizarDeposito()">Depositar</button>
+                        <p id="depositoError" class="hidden"></p>
+                    </div>
+                    <div id="retiro" class="hidden">
+                        <h3>Retiro</h3>
+                        <label for="montoRetiro">Monto a retirar (min $100):</label>
+                        <input type="number" id="montoRetiro"><br><br>
+                        <button onclick="realizarRetiro()">Retirar</button>
+                        <p id="retiroError" class="hidden"></p>
+                    </div>
+                    <div id="pago" class="hidden">
+                        <h3>Pagar Servicio</h3>
+                        <label for="numeroSerie">Número de serie del servicio (6 dígitos):</label>
+                        <input type="number" id="numeroSerie"><br><br>
+                        <label for="montoPago">Monto a pagar:</label>
+                        <input type="number" id="montoPago"><br><br>
+                        <button onclick="pagarServicio()">Pagar</button>
+                        <p id="pagoError" class="hidden"></p>
+                    </div>
+                </div>
+                `;
+            } else if (serviceNumber === 3) {
+                content = `
+                <h2>Calcular Capital</h2>
+                <label for="tasa">Ingrese la tasa de interés anual (%):</label>
+                <input type="number" id="tasa" step="0.01"><br>
+                
+                <label for="pagos">Ingrese el número de pagos de interés por año:</label>
+                <input type="number" id="pagos" step="1"><br>
+                
+                <label for="anos">Ingrese el número de años:</label>
+                <input type="number" id="anos" step="1"><br>
+                
+                <button onclick="calcularCapitalFinal()">Calcular</button>
+                
+                <p id="resultado"></p>
+                `;
+            }
+            document.getElementById('serviceContent').innerHTML = content;
+        }
+
+        function goBackToMenu() {
+            document.getElementById('serviceContainer').style.animation = 'fadeOut 0.5s ease-in-out';
+            setTimeout(() => {
+                document.getElementById('serviceContainer').style.display = 'none';
+                document.getElementById('menuContainer').style.display = 'block';
+            }, 500);
+        }
+
+        function goBackToStart() {
+            document.getElementById('serviceContainer').style.animation = 'fadeOut 0.5s ease-in-out';
+            setTimeout(() => {
+                document.getElementById('serviceContainer').style.display = 'none';
+                document.getElementById('menuContainer').style.display = 'none';
+                document.getElementById('loginContainer').style.display = 'block';
+            }, 500);
+        }
+
+        let saldo = 1000; // Saldo inicial
+
+        function resetCajero() {
+            document.getElementById('login').style.display = 'block';
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('cuenta').value = '';
+            document.getElementById('nip').value = '';
+            document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('saldoInfo').classList.add('hidden');
+            document.getElementById('deposito').classList.add('hidden');
+            document.getElementById('retiro').classList.add('hidden');
+            document.getElementById('pago').classList.add('hidden');
+        }
+
+        function validarUsuario() {
+            const cuenta = document.getElementById('cuenta').value;
+            const nip = document.getElementById('nip').value;
+
+            // Validación simplificada
+            if (cuenta.length === 18 && nip.length === 4) {
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('menu').style.display = 'block';
+                document.getElementById('saldo').textContent = saldo;
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function mostrarSaldo() {
+            document.getElementById('saldoInfo').classList.remove('hidden');
+        }
+
+        function mostrarDeposito() {
+            document.getElementById('deposito').classList.remove('hidden');
+            document.getElementById('retiro').classList.add('hidden');
+            document.getElementById('pago').classList.add('hidden');
+        }
+
+        function realizarDeposito() {
+            const monto = parseFloat(document.getElementById('montoDeposito').value);
+            document.getElementById('depositoError').classList.add('hidden');
+
+            if (monto > 0 && monto <= 5000) {
+                saldo += monto;
+                document.getElementById('saldo').textContent = saldo;
+                alert('Depósito realizado con éxito.');
+            } else {
+                document.getElementById('depositoError').textContent = 'Monto inválido. Debe ser entre 1 y 5000.';
+                document.getElementById('depositoError').classList.remove('hidden');
+            }
+        }
+
+        function mostrarRetiro() {
+            document.getElementById('retiro').classList.remove('hidden');
+            document.getElementById('deposito').classList.add('hidden');
+            document.getElementById('pago').classList.add('hidden');
+        }
+
+        function realizarRetiro() {
+            const monto = parseFloat(document.getElementById('montoRetiro').value);
+            document.getElementById('retiroError').classList.add('hidden');
+
+            if (monto >= 100 && monto <= saldo) {
+                saldo -= monto;
+                document.getElementById('saldo').textContent = saldo;
+                alert('Retiro realizado con éxito.');
+            } else {
+                document.getElementById('retiroError').textContent = 'Monto inválido. Debe ser mayor o igual a 100 y menor o igual a su saldo.';
+                document.getElementById('retiroError').classList.remove('hidden');
+            }
+        }
+
+        function mostrarPago() {
+            document.getElementById('pago').classList.remove('hidden');
+            document.getElementById('deposito').classList.add('hidden');
+            document.getElementById('retiro').classList.add('hidden');
+        }
+
+        function pagarServicio() {
+            const numeroSerie = document.getElementById('numeroSerie').value;
+            const monto = parseFloat(document.getElementById('montoPago').value);
+            document.getElementById('pagoError').classList.add('hidden');
+
+            if (numeroSerie.length === 6 && monto > 0 && monto <= saldo) {
+                saldo -= monto;
+                document.getElementById('saldo').textContent = saldo;
+                alert('Pago realizado con éxito.');
+            } else {
+                document.getElementById('pagoError').textContent = 'Monto inválido o número de serie incorrecto.';
+                document.getElementById('pagoError').classList.remove('hidden');
+            }
+        }
+
+        function salir() {
+            resetCajero();
+        }
+
+        function calcularCapitalFinal() {
+            const Ci = 1000000.0; // Capital inicial
+            const n = parseFloat(document.getElementById('tasa').value) / 100; // Tasa de interés anual en decimal
+            const p = parseFloat(document.getElementById('pagos').value); // Número de pagos por año
+            const a = parseFloat(document.getElementById('anos').value); // Número de años
+            
+            if (isNaN(n) || isNaN(p) || isNaN(a) || p <= 0 || a <= 0) {
+                document.getElementById('resultado').textContent = "Por favor, ingrese valores válidos.";
+                return;
+            }
+            
+            // Fórmula de cálculo del capital final
+            const Cf = Ci * Math.pow((1 + (n / p)), (p * a));
+            
+            // Mostrar el resultado
+            document.getElementById('resultado').textContent = `El capital final es: ${Cf.toFixed(2)} pesos`;
+        }
+    </script>
+</body>
+</html>
